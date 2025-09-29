@@ -1,14 +1,39 @@
 <!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Redirecting…</title>
+<style>
+  body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial; padding: 24px; line-height: 1.4; }
+  a.button { display:inline-block; padding:10px 14px; border:1px solid #222; border-radius:8px; text-decoration:none; }
+</style>
 <script>
-  (function () {
-    const targetBase = "https://script.google.com/macros/s/AKfycbznxE8MOFVyRSIo613R75UfFzENju_9arcwOibNpLVISue3QwdWC3wcr3u713N4XU2F/exec";
-    const u = new URL(location.href);
-    const unit = u.searchParams.get('unit');
-    const board = u.searchParams.get('board');
-    if (!unit || !board) { document.write("Missing unit or board"); return; }
-    location.replace(targetBase + "?unit=" + encodeURIComponent(unit) + "&board=" + encodeURIComponent(board));
-  })();
+(function () {
+  // ✅ Your Apps Script /exec URL
+  const TARGET_BASE = "https://script.google.com/macros/s/AKfycbznxE8MOFVyRSIo613R75UfFzENju_9arcwOibNpLVISue3QwdWC3wcr3u713N4XU2F/exec";
+
+  const u = new URL(location.href);
+  // tolerate different param names just in case
+  const unit  = u.searchParams.get('unit')  || u.searchParams.get('u');
+  const board = u.searchParams.get('board') || u.searchParams.get('b');
+
+  if (!unit || !board) {
+    document.write("<h3>Missing unit or board</h3><p>This URL must include <code>?unit=…&board=…</code>.</p>");
+    return;
+  }
+
+  const target = TARGET_BASE + "?unit=" + encodeURIComponent(unit) + "&board=" + encodeURIComponent(board);
+
+  // Try multiple ways to escape in-app viewers (Drive, etc.)
+  try { window.top.location.href = target; } catch(e) {}
+  try { window.location.replace(target); } catch(e) {}
+  setTimeout(function(){ window.location.href = target; }, 50);
+
+  // Visible fallback
+  document.addEventListener('DOMContentLoaded', function () {
+    var a = document.getElementById('fallback');
+    a.href = target;
+    a.textContent = 'Open';
+  });
+})();
 </script>
 <p>Redirecting…</p>
+<p>If nothing happens, tap: <a id="fallback" class="button" href="#">Open</a></p>
