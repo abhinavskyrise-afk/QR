@@ -1,0 +1,14 @@
+<!doctype html>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Redirecting…</title>
+<script>
+  (function () {
+    const targetBase = "https://script.google.com/macros/s/AKfycbznxE8MOFVyRSIo613R75UfFzENju_9arcwOibNpLVISue3QwdWC3wcr3u713N4XU2F/exec";
+    const u = new URL(location.href);
+    const unit = u.searchParams.get('unit');
+    const board = u.searchParams.get('board');
+    if (!unit || !board) { document.write("Missing unit or board"); return; }
+    location.replace(targetBase + "?unit=" + encodeURIComponent(unit) + "&board=" + encodeURIComponent(board));
+  })();
+</script>
+<p>Redirecting…</p>
